@@ -24,13 +24,19 @@ func GetAllPersonalTasks(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	var tasks []models.Task
-	if err := db.Where("user_id = ?", userId).Order("created_at desc").Find(&tasks).Error; err.Error != nil {
+	if err := db.Find(&tasks); err.Error != nil {
 		logger.Error("Failed to fetch tasks")
 		http.Error(w, "Failed to fetch tasks", http.StatusInternalServerError)
 		return
 	}
 
-	tasksJson, err := json.Marshal(tasks)
+	var personalTasks []models.Task
+	for i := range tasks {
+		if tasks[i].UserId == userId {
+			personalTasks = append(personalTasks, tasks[i])
+		}
+	}
+	tasksJson, err := json.Marshal(personalTasks)
 	if err != nil {
 		logger.Error("Failed to marshal tasks: " + err.Error())
 		http.Error(w, "Internal server error: "+err.Error(), http.StatusInternalServerError)
