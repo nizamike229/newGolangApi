@@ -2,14 +2,19 @@ package models
 
 import (
 	"awesomeProject/logger"
+	"github.com/google/uuid"
 	"golang.org/x/crypto/bcrypt"
 	"gorm.io/gorm"
+	"time"
 )
 
 type User struct {
-	gorm.Model
-	Username string `gorm:"unique;not null"`
-	Password string `gorm:"not null"`
+	ID        uuid.UUID `gorm:"type:uuid;primaryKey;default:uuid_generate_v4()"`
+	Username  string    `gorm:"unique;not null"`
+	Password  string    `gorm:"not null"`
+	CreatedAt time.Time
+	UpdatedAt time.Time
+	DeletedAt gorm.DeletedAt `gorm:"index"`
 }
 
 type UserRequest struct {
