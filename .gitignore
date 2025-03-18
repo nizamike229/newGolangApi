@@ -141,3 +141,9 @@ fabric.properties
 .idea/**/azureSettings.xml
 
 # End of https://www.toptal.com/developers/gitignore/api/go,goland
+/.idea/vcs.xml
+/.idea/awesomeProject.iml
+/.idea/dataSources.xml
+/main.env
+/.idea/misc.xml
+/.idea/modules.xml
