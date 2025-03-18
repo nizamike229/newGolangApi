@@ -9,7 +9,7 @@ This is a RESTful API built with Go, featuring CRUD operations, authentication, 
 - Database :floppy_disk: - PostgreSQL with GORM for ORM.
 - Framework :gear: - Built using go-chi for routing.
 # Tech Stack :computer:
-- Language: Go :golang:
+- Language: Go
 - outer: go-chi/chi/v5
 - ORM: gorm.io/gorm with gorm.io/driver/postgres
 - JWT: github.com/golang-jwt/jwt/v5
