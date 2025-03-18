@@ -10,8 +10,8 @@ This is a RESTful API built with Go, featuring CRUD operations, authentication, 
 - Framework :gear: - Built using go-chi for routing.
 # Tech Stack :computer:
 - Language: Go :golang:
-- outer: go-chi/chi/v5 :arrow_right:
-- ORM: gorm.io/gorm with gorm.io/driver/postgres :database:
-- JWT: github.com/golang-jwt/jwt/v5 :lock:
-- Logger: Custom implementation over fmt.Println :speech_balloon:
-- Database: PostgreSQL :elephant:
+- outer: go-chi/chi/v5
+- ORM: gorm.io/gorm with gorm.io/driver/postgres
+- JWT: github.com/golang-jwt/jwt/v5
+- Logger: Custom implementation over fmt.Println
+- Database: PostgreSQL
