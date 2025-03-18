@@ -1,4 +1,4 @@
-# REST API Project :rocket: [![My Skills](https://skillicons.dev/icons?i=go)](https://skillicons.dev)
+# [![My Skills](https://skillicons.dev/icons?i=go)](https://skillicons.dev)REST API Project :rocket: 
 This is a RESTful API built with Go, featuring CRUD operations, authentication, authorization, and a custom logger. The project is designed to manage Person entities and secure access with JWT-based authentication.
 
 # Features :sparkles:
