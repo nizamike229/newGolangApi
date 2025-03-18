@@ -9,7 +9,7 @@ import (
 )
 
 func WithDB(db *gorm.DB) func(http.Handler) http.Handler {
-	dbErr := db.Table("persons").AutoMigrate(&models.Person{})
+	dbErr := db.Table("tasks").AutoMigrate(&models.Task{})
 	usersDbErr := db.Table("users").AutoMigrate(&models.User{})
 	if usersDbErr != nil {
 		logger.Error(usersDbErr.Error())
