@@ -147,3 +147,4 @@ fabric.properties
 /main.env
 /.idea/misc.xml
 /.idea/modules.xml
+/.idea/go.imports.xml
