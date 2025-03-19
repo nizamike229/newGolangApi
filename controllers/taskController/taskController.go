@@ -11,7 +11,7 @@ import (
 
 func GetAllPersonalTasks(w http.ResponseWriter, r *http.Request) {
 	var db = r.Context().Value("db").(*gorm.DB)
-	userId := r.Context().Value("userID").(uuid.UUID)
+	userId := r.Context().Value("userID")
 	var tasks []models.Task
 	if err := db.Find(&tasks); err.Error != nil {
 		logger.Error("Failed to fetch tasks")
@@ -53,7 +53,7 @@ func CreateTask(w http.ResponseWriter, r *http.Request) {
 		Title:     taskRequest.Title,
 		Priority:  taskRequest.Priority,
 		Deadline:  taskRequest.Deadline,
-		Completed: taskRequest.Completed,
+		Completed: false,
 		UserId:    userId,
 	}
 
@@ -100,4 +100,37 @@ func DeleteTask(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
 	w.Write([]byte("Task was deleted successfully!"))
+}
+
+func CompleteTask(w http.ResponseWriter, r *http.Request) {
+	var db = r.Context().Value("db").(*gorm.DB)
+	userId := r.Context().Value("userID").(uuid.UUID)
+	var taskId int
+	err := json.NewDecoder(r.Body).Decode(&taskId)
+	if err != nil {
+		logger.Error("Invalid request: " + err.Error())
+		http.Error(w, "Internal server error: "+err.Error(), http.StatusInternalServerError)
+		return
+	}
+	var task models.Task
+	if err := db.First(&task, taskId).Error; err != nil {
+		logger.Error("Failed to fetch task: " + err.Error())
+		http.Error(w, "Internal server error: "+err.Error(), http.StatusInternalServerError)
+		return
+	}
+	if task.UserId != userId {
+		logger.Error("User(" + userId.String() + ") is not authorized to complete this task")
+		http.Error(w, "You are not authorized to complete this task", http.StatusUnauthorized)
+		return
+	}
+	task.Completed = true
+	if err := db.Save(&task).Error; err != nil {
+		logger.Error("Failed to complete task: " + err.Error())
+		http.Error(w, "Internal server error: "+err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK)
+	w.Write([]byte("Task was completed successfully!"))
 }
