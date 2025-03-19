@@ -31,6 +31,7 @@ func main() {
 		r.Get("/all", taskController.GetAllPersonalTasks)
 		r.Post("/create", taskController.CreateTask)
 		r.Delete("/deleteById", taskController.DeleteTask)
+		r.Patch("/complete", taskController.CompleteTask)
 	})
 	r.Route("/api/auth", func(r chi.Router) {
 		r.Post("/register", authController.Register)
