@@ -2,7 +2,7 @@ package customMiddleware
 
 import (
 	"awesomeProject/internal/logger"
-	"awesomeProject/models"
+	"awesomeProject/internal/models"
 	"context"
 	"gorm.io/gorm"
 	"net/http"
