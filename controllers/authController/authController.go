@@ -84,8 +84,9 @@ func Login(w http.ResponseWriter, r *http.Request) {
 	}
 
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
-		"sub": user.Username,
-		"exp": time.Now().Add(time.Hour * 24).Unix(),
+		"sub":    user.Username,
+		"userId": user.ID.String(),
+		"exp":    time.Now().Add(time.Hour * 24).Unix(),
 	})
 	tokenString, err := token.SignedString(jwtSecret)
 	if err != nil {
