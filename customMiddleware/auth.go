@@ -3,6 +3,7 @@ package customMiddleware
 import (
 	"context"
 	"github.com/golang-jwt/jwt/v5"
+	"github.com/google/uuid"
 	"github.com/joho/godotenv"
 	"net/http"
 	"os"
@@ -37,7 +38,19 @@ func AuthMiddleware(next http.Handler) http.Handler {
 			return
 		}
 
-		ctx := context.WithValue(r.Context(), "claims", claims)
+		userIDStr, ok := claims["userID"].(string)
+		if !ok {
+			http.Error(w, "UserID not found in token claims", http.StatusUnauthorized)
+			return
+		}
+
+		userID, err := uuid.Parse(userIDStr)
+		if err != nil {
+			http.Error(w, "Invalid UserID format", http.StatusUnauthorized)
+			return
+		}
+
+		ctx := context.WithValue(r.Context(), "userID", userID)
 		next.ServeHTTP(w, r.WithContext(ctx))
 	})
 }
