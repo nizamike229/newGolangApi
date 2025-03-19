@@ -38,7 +38,7 @@ func AuthMiddleware(next http.Handler) http.Handler {
 			return
 		}
 
-		userIDStr, ok := claims["userID"].(string)
+		userIDStr, ok := claims["userId"].(string)
 		if !ok {
 			http.Error(w, "UserID not found in token claims", http.StatusUnauthorized)
 			return
