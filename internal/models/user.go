@@ -1,7 +1,7 @@
 package models
 
 import (
-	"awesomeProject/logger"
+	"awesomeProject/internal/logger"
 	"github.com/google/uuid"
 	"golang.org/x/crypto/bcrypt"
 	"gorm.io/gorm"

@@ -1,11 +1,11 @@
 package main
 
 import (
-	"awesomeProject/controllers/authController"
-	"awesomeProject/controllers/taskController"
-	"awesomeProject/customMiddleware"
 	_ "awesomeProject/docs"
-	"awesomeProject/logger"
+	"awesomeProject/internal/controllers/authController"
+	"awesomeProject/internal/controllers/taskController"
+	customMiddleware2 "awesomeProject/internal/customMiddleware"
+	"awesomeProject/internal/logger"
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
 	"github.com/joho/godotenv"
@@ -31,10 +31,10 @@ func main() {
 	r := chi.NewRouter()
 	r.Use(middleware.Logger)
 	r.Use(middleware.Recoverer)
-	r.Use(customMiddleware.WithDB(db))
+	r.Use(customMiddleware2.WithDB(db))
 
 	r.Route("/api/task", func(r chi.Router) {
-		r.Use(customMiddleware.AuthMiddleware)
+		r.Use(customMiddleware2.AuthMiddleware)
 		r.Get("/all", taskController.GetAllPersonalTasks)
 		r.Post("/create", taskController.CreateTask)
 		r.Delete("/deleteById", taskController.DeleteTask)

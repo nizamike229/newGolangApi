@@ -1,8 +1,8 @@
 package authController
 
 import (
-	"awesomeProject/logger"
-	"awesomeProject/models"
+	"awesomeProject/internal/logger"
+	"awesomeProject/internal/models"
 	"encoding/json"
 	"errors"
 	"github.com/go-playground/validator/v10"

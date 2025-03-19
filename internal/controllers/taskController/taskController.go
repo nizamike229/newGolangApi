@@ -1,8 +1,8 @@
 package taskController
 
 import (
-	"awesomeProject/logger"
-	"awesomeProject/models"
+	"awesomeProject/internal/logger"
+	"awesomeProject/internal/models"
 	"encoding/json"
 	"github.com/google/uuid"
 	"gorm.io/gorm"

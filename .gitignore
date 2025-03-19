@@ -144,7 +144,7 @@ fabric.properties
 /.idea/vcs.xml
 /.idea/awesomeProject.iml
 /.idea/dataSources.xml
-/main.env
+/configs/main.env
 /.idea/misc.xml
 /.idea/modules.xml
 /.idea/go.imports.xml
