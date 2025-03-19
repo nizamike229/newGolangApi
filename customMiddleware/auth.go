@@ -3,10 +3,12 @@ package customMiddleware
 import (
 	"context"
 	"github.com/golang-jwt/jwt/v5"
+	"github.com/joho/godotenv"
 	"net/http"
+	"os"
 )
 
-var jwtSecret = []byte("my-super-secret-string")
+var jwtSecret = getJwt()
 
 func AuthMiddleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
@@ -38,4 +40,9 @@ func AuthMiddleware(next http.Handler) http.Handler {
 		ctx := context.WithValue(r.Context(), "claims", claims)
 		next.ServeHTTP(w, r.WithContext(ctx))
 	})
+}
+
+var getJwt = func() []byte {
+	godotenv.Load("./main.env")
+	return []byte(os.Getenv("JWT_SECRET"))
 }
