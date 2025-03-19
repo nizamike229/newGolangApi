@@ -56,6 +56,6 @@ func AuthMiddleware(next http.Handler) http.Handler {
 }
 
 var getJwt = func() []byte {
-	godotenv.Load("./main.env")
+	godotenv.Load("./configs/main.env")
 	return []byte(os.Getenv("JWT_SECRET"))
 }

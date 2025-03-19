@@ -127,7 +127,7 @@ paths:
       - application/json
       description: Mark a task as completed
       parameters:
-      - description: Task ID
+      - description: taskId
         in: body
         name: id
         required: true
@@ -187,11 +187,12 @@ paths:
       - application/json
       description: Delete a task by its ID
       parameters:
-      - description: Task ID
-        in: query
+      - description: taskId
+        in: body
         name: id
         required: true
-        type: integer
+        schema:
+          type: integer
       produces:
       - application/json
       responses:

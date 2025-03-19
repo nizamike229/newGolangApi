@@ -142,7 +142,7 @@ const docTemplate = `{
                 "summary": "Complete a task",
                 "parameters": [
                     {
-                        "description": "Task ID",
+                        "description": "taskId",
                         "name": "id",
                         "in": "body",
                         "required": true,
@@ -234,11 +234,13 @@ const docTemplate = `{
                 "summary": "Delete a task",
                 "parameters": [
                     {
-                        "type": "integer",
-                        "description": "Task ID",
+                        "description": "taskId",
                         "name": "id",
-                        "in": "query",
-                        "required": true
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
                     }
                 ],
                 "responses": {

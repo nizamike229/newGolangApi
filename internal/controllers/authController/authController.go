@@ -128,6 +128,6 @@ func Login(w http.ResponseWriter, r *http.Request) {
 }
 
 var getJwt = func() []byte {
-	godotenv.Load("./main.env")
+	godotenv.Load("./configs/main.env")
 	return []byte(os.Getenv("JWT_SECRET"))
 }

@@ -22,7 +22,7 @@ import (
 // @host localhost:8080
 // @BasePath /
 func main() {
-	godotenv.Load("./main.env")
+	godotenv.Load("./configs/main.env")
 	db, err := gorm.Open(postgres.Open(os.Getenv("DB_DSN")), &gorm.Config{})
 	if err != nil {
 		logger.Error("Failed to connect to database: " + err.Error())

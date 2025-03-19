@@ -95,7 +95,7 @@ func CreateTask(w http.ResponseWriter, r *http.Request) {
 // @Tags tasks
 // @Accept json
 // @Produce json
-// @Param id query int true "Task ID"
+// @Param id body int true "taskId"
 // @Success 200 {object} string "Task deleted"
 // @Failure 400 {object} string "Bad request"
 // @Failure 401 {object} string "Unauthorized"
@@ -139,7 +139,7 @@ func DeleteTask(w http.ResponseWriter, r *http.Request) {
 // @Tags tasks
 // @Accept json
 // @Produce json
-// @Param id body int true "Task ID"
+// @Param id body int true "taskId"
 // @Success 200 {object} string "Task completed"
 // @Failure 400 {object} string "Bad request"
 // @Failure 401 {object} string "Unauthorized"
