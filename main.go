@@ -30,7 +30,7 @@ func main() {
 		r.Use(customMiddleware.AuthMiddleware)
 		r.Get("/all", taskController.GetAllPersonalTasks)
 		r.Post("/create", taskController.CreateTask)
-		r.Delete("/deleteById", taskController.DeletePerson)
+		r.Delete("/deleteById", taskController.DeleteTask)
 	})
 	r.Route("/api/auth", func(r chi.Router) {
 		r.Post("/register", authController.Register)

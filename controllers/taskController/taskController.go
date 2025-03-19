@@ -4,25 +4,14 @@ import (
 	"awesomeProject/logger"
 	"awesomeProject/models"
 	"encoding/json"
-	"fmt"
-	"github.com/golang-jwt/jwt/v5"
 	"github.com/google/uuid"
-	"github.com/joho/godotenv"
 	"gorm.io/gorm"
 	"net/http"
-	"os"
 )
-
-var jwtSecret = getJwt()
 
 func GetAllPersonalTasks(w http.ResponseWriter, r *http.Request) {
 	var db = r.Context().Value("db").(*gorm.DB)
-	username, err := getUsernameFromCookie(r)
-	userId, err := getUserIdFromUsername(r, db, username)
-	if err != nil {
-		http.Error(w, "Unauthorized:"+err.Error(), http.StatusInternalServerError)
-		return
-	}
+	userId := r.Context().Value("userID").(uuid.UUID)
 	var tasks []models.Task
 	if err := db.Find(&tasks); err.Error != nil {
 		logger.Error("Failed to fetch tasks")
@@ -53,24 +42,12 @@ func CreateTask(w http.ResponseWriter, r *http.Request) {
 	var taskRequest models.TaskRequest
 	err := json.NewDecoder(r.Body).Decode(&taskRequest)
 	if err != nil {
-		logger.Error("Failed to unmarshal request: " + err.Error())
+		logger.Error("Invalid request: " + err.Error())
 		http.Error(w, "Internal server error: "+err.Error(), http.StatusInternalServerError)
 		return
 	}
 
-	username, err := getUsernameFromCookie(r)
-	if err != nil {
-		http.Error(w, "Unauthorized:"+err.Error(), http.StatusInternalServerError)
-		logger.Error("Failed to get username: " + err.Error())
-		return
-	}
-
-	userId, err := getUserIdFromUsername(r, db, username)
-	if err != nil {
-		http.Error(w, "Unauthorized:"+err.Error(), http.StatusInternalServerError)
-		logger.Error("Failed to get userId: " + err.Error())
-		return
-	}
+	userId := r.Context().Value("userID").(uuid.UUID)
 
 	task := models.Task{
 		Title:     taskRequest.Title,
@@ -92,57 +69,35 @@ func CreateTask(w http.ResponseWriter, r *http.Request) {
 	w.Write([]byte("Task was created successfully!"))
 }
 
-func DeletePerson(w http.ResponseWriter, r *http.Request) {
-	//TODO
-}
-
-func getUsernameFromCookie(r *http.Request) (string, error) {
-	cookie, err := r.Cookie("authToken")
+func DeleteTask(w http.ResponseWriter, r *http.Request) {
+	var db = r.Context().Value("db").(*gorm.DB)
+	userId := r.Context().Value("userID").(uuid.UUID)
+	var taskId int
+	err := json.NewDecoder(r.Body).Decode(&taskId)
 	if err != nil {
-		logger.Error("No auth token found: " + err.Error())
-		return "", err
+		logger.Error("Invalid request: " + err.Error())
+		http.Error(w, "Internal server error: "+err.Error(), http.StatusInternalServerError)
+		return
 	}
 
-	token, err := jwt.Parse(cookie.Value, func(token *jwt.Token) (interface{}, error) {
-		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
-			return nil, fmt.Errorf("unexpected signing method")
-		}
-		return jwtSecret, nil
-	})
-	if err != nil || !token.Valid {
-		logger.Error("Invalid token: " + err.Error())
-		return "", err
+	var task models.Task
+	if err := db.First(&task, taskId).Error; err != nil {
+		logger.Error("Failed to fetch task: " + err.Error())
+		http.Error(w, "Internal server error: "+err.Error(), http.StatusInternalServerError)
+		return
 	}
-
-	claims, ok := token.Claims.(jwt.MapClaims)
-	if !ok {
-		logger.Error("Invalid claims")
-		return "", fmt.Errorf("invalid token claims")
+	if task.UserId != userId {
+		logger.Error("User(" + userId.String() + ") is not authorized to delete this task")
+		http.Error(w, "You are not authorized to delete this task", http.StatusUnauthorized)
+		return
 	}
-
-	username, ok := claims["sub"].(string)
-	if !ok {
-		logger.Error("Username not found in claims")
-		return "", fmt.Errorf("username not found in token")
+	if err := db.Delete(&task).Error; err != nil {
+		logger.Error("Failed to delete task: " + err.Error())
+		http.Error(w, "Internal server error: "+err.Error(), http.StatusInternalServerError)
+		return
 	}
-
-	return username, nil
-}
-func getUserIdFromUsername(r *http.Request, db *gorm.DB, username string) (uuid.UUID, error) {
-	username, err := getUsernameFromCookie(r)
-	if err != nil {
-		logger.Error("No auth token found: " + err.Error())
-		return uuid.UUID{}, err
-	}
-	var user models.User
-	if err := db.Where("username = ?", username).First(&user).Error; err != nil {
-		logger.Error("User not found:" + err.Error())
-		return uuid.UUID{}, err
-	}
-	return user.ID, nil
-}
-
-var getJwt = func() []byte {
-	godotenv.Load("./main.env")
-	return []byte(os.Getenv("JWT_SECRET"))
+	logger.Info("Deleted task: " + task.Title)
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK)
+	w.Write([]byte("Task was deleted successfully!"))
 }
