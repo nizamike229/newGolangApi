@@ -9,6 +9,15 @@ import (
 	"net/http"
 )
 
+// GetAllPersonalTasks возвращает все задачи пользователя
+// @Summary Get all personal tasks
+// @Description Retrieve a list of all tasks for the authenticated user
+// @Tags tasks
+// @Accept json
+// @Produce json
+// @Success 200 {array} string "List of tasks"
+// @Failure 401 {object} string "Unauthorized"
+// @Router /api/task/all [get]
 func GetAllPersonalTasks(w http.ResponseWriter, r *http.Request) {
 	var db = r.Context().Value("db").(*gorm.DB)
 	userId := r.Context().Value("userID")
@@ -37,6 +46,17 @@ func GetAllPersonalTasks(w http.ResponseWriter, r *http.Request) {
 	w.Write(tasksJson)
 }
 
+// CreateTask создаёт новую задачу
+// @Summary Create a new task
+// @Description Create a new task for the authenticated user
+// @Tags tasks
+// @Accept json
+// @Produce json
+// @Param task body models.TaskRequest true "Task description"
+// @Success 201 {object} string "Task created"
+// @Failure 400 {object} string "Bad request"
+// @Failure 401 {object} string "Unauthorized"
+// @Router /api/task/create [post]
 func CreateTask(w http.ResponseWriter, r *http.Request) {
 	var db = r.Context().Value("db").(*gorm.DB)
 	var taskRequest models.TaskRequest
@@ -69,6 +89,17 @@ func CreateTask(w http.ResponseWriter, r *http.Request) {
 	w.Write([]byte("Task was created successfully!"))
 }
 
+// DeleteTask удаляет задачу по ID
+// @Summary Delete a task
+// @Description Delete a task by its ID
+// @Tags tasks
+// @Accept json
+// @Produce json
+// @Param id query int true "Task ID"
+// @Success 200 {object} string "Task deleted"
+// @Failure 400 {object} string "Bad request"
+// @Failure 401 {object} string "Unauthorized"
+// @Router /api/task/deleteById [delete]
 func DeleteTask(w http.ResponseWriter, r *http.Request) {
 	var db = r.Context().Value("db").(*gorm.DB)
 	userId := r.Context().Value("userID").(uuid.UUID)
@@ -102,6 +133,17 @@ func DeleteTask(w http.ResponseWriter, r *http.Request) {
 	w.Write([]byte("Task was deleted successfully!"))
 }
 
+// CompleteTask помечает задачу как завершённую
+// @Summary Complete a task
+// @Description Mark a task as completed
+// @Tags tasks
+// @Accept json
+// @Produce json
+// @Param id body int true "Task ID"
+// @Success 200 {object} string "Task completed"
+// @Failure 400 {object} string "Bad request"
+// @Failure 401 {object} string "Unauthorized"
+// @Router /api/task/complete [patch]
 func CompleteTask(w http.ResponseWriter, r *http.Request) {
 	var db = r.Context().Value("db").(*gorm.DB)
 	userId := r.Context().Value("userID").(uuid.UUID)

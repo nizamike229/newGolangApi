@@ -1,0 +1,213 @@
+basePath: /
+definitions:
+  models.Priority:
+    enum:
+    - 0
+    - 1
+    - 2
+    type: integer
+    x-enum-varnames:
+    - Low
+    - Medium
+    - High
+  models.TaskRequest:
+    properties:
+      deadline:
+        type: string
+      priority:
+        allOf:
+        - $ref: '#/definitions/models.Priority'
+        maximum: 2
+        minimum: 0
+      title:
+        maxLength: 100
+        minLength: 1
+        type: string
+    required:
+    - deadline
+    - title
+    type: object
+  models.UserRequest:
+    properties:
+      password:
+        maxLength: 64
+        minLength: 8
+        type: string
+      username:
+        maxLength: 32
+        minLength: 3
+        type: string
+    required:
+    - password
+    - username
+    type: object
+host: localhost:8080
+info:
+  contact: {}
+  description: This is a simple API for managing tasks and authentication
+  title: Simple Golang TO-DO
+  version: "1.0"
+paths:
+  /api/auth/login:
+    post:
+      consumes:
+      - application/json
+      description: Authenticate a user and return a token
+      parameters:
+      - description: User data
+        in: body
+        name: user
+        required: true
+        schema:
+          $ref: '#/definitions/models.UserRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Token
+          schema:
+            type: string
+        "401":
+          description: Unauthorized
+          schema:
+            type: string
+      summary: Login a user
+      tags:
+      - auth
+  /api/auth/register:
+    post:
+      consumes:
+      - application/json
+      description: Register a new user with username and password
+      parameters:
+      - description: User data
+        in: body
+        name: user
+        required: true
+        schema:
+          $ref: '#/definitions/models.UserRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: User registered
+          schema:
+            type: string
+        "400":
+          description: Bad request
+          schema:
+            type: string
+      summary: Register a new user
+      tags:
+      - auth
+  /api/task/all:
+    get:
+      consumes:
+      - application/json
+      description: Retrieve a list of all tasks for the authenticated user
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: List of tasks
+          schema:
+            items:
+              type: string
+            type: array
+        "401":
+          description: Unauthorized
+          schema:
+            type: string
+      summary: Get all personal tasks
+      tags:
+      - tasks
+  /api/task/complete:
+    patch:
+      consumes:
+      - application/json
+      description: Mark a task as completed
+      parameters:
+      - description: Task ID
+        in: body
+        name: id
+        required: true
+        schema:
+          type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Task completed
+          schema:
+            type: string
+        "400":
+          description: Bad request
+          schema:
+            type: string
+        "401":
+          description: Unauthorized
+          schema:
+            type: string
+      summary: Complete a task
+      tags:
+      - tasks
+  /api/task/create:
+    post:
+      consumes:
+      - application/json
+      description: Create a new task for the authenticated user
+      parameters:
+      - description: Task description
+        in: body
+        name: task
+        required: true
+        schema:
+          $ref: '#/definitions/models.TaskRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Task created
+          schema:
+            type: string
+        "400":
+          description: Bad request
+          schema:
+            type: string
+        "401":
+          description: Unauthorized
+          schema:
+            type: string
+      summary: Create a new task
+      tags:
+      - tasks
+  /api/task/deleteById:
+    delete:
+      consumes:
+      - application/json
+      description: Delete a task by its ID
+      parameters:
+      - description: Task ID
+        in: query
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Task deleted
+          schema:
+            type: string
+        "400":
+          description: Bad request
+          schema:
+            type: string
+        "401":
+          description: Unauthorized
+          schema:
+            type: string
+      summary: Delete a task
+      tags:
+      - tasks
+swagger: "2.0"

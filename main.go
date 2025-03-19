@@ -4,16 +4,23 @@ import (
 	"awesomeProject/controllers/authController"
 	"awesomeProject/controllers/taskController"
 	"awesomeProject/customMiddleware"
+	_ "awesomeProject/docs"
 	"awesomeProject/logger"
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
 	"github.com/joho/godotenv"
+	httpSwagger "github.com/swaggo/http-swagger"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 	"net/http"
 	"os"
 )
 
+// @title Simple Golang TO-DO
+// @version 1.0
+// @description This is a simple API for managing tasks and authentication
+// @host localhost:8080
+// @BasePath /
 func main() {
 	godotenv.Load("./main.env")
 	db, err := gorm.Open(postgres.Open(os.Getenv("DB_DSN")), &gorm.Config{})
@@ -37,6 +44,14 @@ func main() {
 		r.Post("/register", authController.Register)
 		r.Post("/login", authController.Login)
 	})
+
+	r.Get("/docs/swagger.json", func(w http.ResponseWriter, r *http.Request) {
+		http.ServeFile(w, r, "docs/swagger.json")
+	})
+
+	r.Get("/swagger/*", httpSwagger.Handler(
+		httpSwagger.URL("/docs/swagger.json"),
+	))
 
 	logger.Info("Server is running on port 8080")
 	launchErr := http.ListenAndServe(":8080", r)

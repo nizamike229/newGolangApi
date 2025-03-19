@@ -16,6 +16,16 @@ import (
 
 var jwtSecret = getJwt()
 
+// Register регистрирует нового пользователя
+// @Summary Register a new user
+// @Description Register a new user with username and password
+// @Tags auth
+// @Accept json
+// @Produce json
+// @Param user body models.UserRequest true "User data" { "username": "string", "password": "string" }
+// @Success 201 {object} string "User registered"
+// @Failure 400 {object} string "Bad request"
+// @Router /api/auth/register [post]
 func Register(w http.ResponseWriter, r *http.Request) {
 	var db = r.Context().Value("db").(*gorm.DB)
 	var request models.UserRequest
@@ -62,6 +72,16 @@ func Register(w http.ResponseWriter, r *http.Request) {
 	_ = json.NewEncoder(w).Encode(map[string]string{"message": "User registered successfully!"})
 }
 
+// Login аутентифицирует пользователя
+// @Summary Login a user
+// @Description Authenticate a user and return a token
+// @Tags auth
+// @Accept json
+// @Produce json
+// @Param user body models.UserRequest true "User data" { "username": "string", "password": "string" }
+// @Success 200 {object} string "Token"
+// @Failure 401 {object} string "Unauthorized"
+// @Router /api/auth/login [post]
 func Login(w http.ResponseWriter, r *http.Request) {
 	var db = r.Context().Value("db").(*gorm.DB)
 	var request models.UserRequest
