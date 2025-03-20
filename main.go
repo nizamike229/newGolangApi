@@ -54,6 +54,8 @@ func main() {
 	))
 
 	logger.Info("Server is running on port 8080")
+	logger.Info("BaseURL: " + "http://localhost:8080/")
+	logger.Info("Swagger on: " + "http://localhost:8080/swagger/")
 	launchErr := http.ListenAndServe(":8080", r)
 	if launchErr != nil {
 		logger.Error(err.Error())
