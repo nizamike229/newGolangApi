@@ -1,8 +1,8 @@
 package models
 
 import (
-	"awesomeProject/internal/logger"
 	"github.com/google/uuid"
+	"github.com/sirupsen/logrus"
 	"golang.org/x/crypto/bcrypt"
 	"gorm.io/gorm"
 	"time"
@@ -25,7 +25,7 @@ type UserRequest struct {
 func (u *User) HashPassword(password string) error {
 	bytes, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
 	if err != nil {
-		logger.Error(err.Error())
+		logrus.Error(err.Error())
 		return err
 	}
 	u.Password = string(bytes)

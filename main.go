@@ -5,10 +5,10 @@ import (
 	"awesomeProject/internal/controllers/authController"
 	"awesomeProject/internal/controllers/taskController"
 	"awesomeProject/internal/customMiddleware"
-	"awesomeProject/internal/logger"
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
 	"github.com/joho/godotenv"
+	"github.com/sirupsen/logrus"
 	httpSwagger "github.com/swaggo/http-swagger"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
@@ -25,7 +25,7 @@ func main() {
 	godotenv.Load("./configs/main.env")
 	db, err := gorm.Open(postgres.Open(os.Getenv("DB_DSN")), &gorm.Config{})
 	if err != nil {
-		logger.Error("Failed to connect to database: " + err.Error())
+		logrus.Error("Failed to connect to database: " + err.Error())
 		os.Exit(1)
 	}
 	r := chi.NewRouter()
@@ -53,11 +53,11 @@ func main() {
 		httpSwagger.URL("/docs/swagger.json"),
 	))
 
-	logger.Info("Server is running on port 8080")
-	logger.Info("BaseURL: " + "http://localhost:8080/")
-	logger.Info("Swagger on: " + "http://localhost:8080/swagger/")
+	logrus.Info("Server is running on port 8080")
+	logrus.Info("BaseURL: " + "http://localhost:8080/")
+	logrus.Info("Swagger on: " + "http://localhost:8080/swagger/")
 	launchErr := http.ListenAndServe(":8080", r)
 	if launchErr != nil {
-		logger.Error(err.Error())
+		logrus.Error(err.Error())
 	}
 }
